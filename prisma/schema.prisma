@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(cuid())
+  googleId     String         @unique
+  email        String         @unique
+  name         String?
+  avatar       String?
+  accessToken  String?        @db.Text // 선택적: 만료 시 재발급
+  refreshToken String?        @db.Text // 갱신용
+  expiresAt    DateTime?      // 토큰 만료 시간
+  tags         Tag[]
+  settings     UserSettings?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("#3B82F6")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskTags  TaskTag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model TaskTag {
+  id        String   @id @default(cuid())
+  taskId    String   // Google Task ID
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([taskId, tagId])
+  @@index([taskId])
+  @@index([tagId])
+}
+
+model UserSettings {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultView String   @default("eisenhower")
+  taskListId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
