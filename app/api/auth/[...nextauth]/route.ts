@@ -27,6 +27,7 @@ declare module 'next-auth' {
  * NextAuth 설정
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true, // 프록시(Cloudflare Tunnel) 사용 시 필요
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,

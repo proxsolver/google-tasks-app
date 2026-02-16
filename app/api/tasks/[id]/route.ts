@@ -35,8 +35,8 @@ export async function GET(
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     const googleTasks = createGoogleTasksClient(user.accessToken)
@@ -92,8 +92,8 @@ export async function PUT(
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     const googleTasks = createGoogleTasksClient(user.accessToken)
@@ -139,7 +139,6 @@ export async function PUT(
             taskId: id,
             tagId,
           })),
-          skipDuplicates: true,
         })
       }
     }
@@ -196,8 +195,8 @@ export async function DELETE(
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     const googleTasks = createGoogleTasksClient(user.accessToken)
@@ -244,8 +243,8 @@ export async function PATCH(
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     const googleTasks = createGoogleTasksClient(user.accessToken)

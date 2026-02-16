@@ -30,8 +30,8 @@ export async function GET(req: NextRequest) {
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     // Google Tasks API로 태스크 조회
@@ -93,8 +93,8 @@ export async function POST(req: NextRequest) {
       include: { settings: true },
     })
 
-    if (!user) {
-      return NextResponse.json({ error: '사용자를 찾을 수 없음' }, { status: 404 })
+    if (!user || !user.accessToken) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없거나 인증 토큰이 없음' }, { status: 404 })
     }
 
     // Google Tasks에 태스크 생성
@@ -125,7 +125,6 @@ export async function POST(req: NextRequest) {
           taskId: newTask.id,
           tagId,
         })),
-        skipDuplicates: true,
       })
     }
 
